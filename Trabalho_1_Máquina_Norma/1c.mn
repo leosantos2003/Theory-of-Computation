@@ -1,0 +1,96 @@
+// ********************** CLEAR **********************
+ operation clear(A){
+  1: if zero A then goto 0 else goto 2
+  2: do dec A goto 1
+ }
+
+ // ********************** SOMA 1 **********************
+ // A:=A+B (destrutiva)
+ operation soma(A,B){
+   1: if zero B then goto 0 else goto 2
+   2: do dec B goto 3
+   3: do inc A goto 1
+ }
+ 
+  // ********************** SOMA 2 **********************
+ // A:=A+B (não destrutiva)
+ operation soma2(A,B,C){
+   1: if zero B then goto 5 else goto 2
+   2: do dec B goto 3
+   3: do inc A goto 4
+   4: do inc C goto 1
+   5: if zero C then goto 0 else goto 6
+   6: do dec C goto 7
+   7: do inc B goto 5
+ }
+ // ********************** ATRIBUIÇÃO 1 **********************
+ // A:=B (destrutiva)
+ operation load(A,B){
+   1: do clear(A) goto 2
+   2: do soma(A,B) goto 0
+ }
+ 
+// ********************** ATRIBUIÇÃO 2 **********************
+ // A:=B usando C (não destrutiva)
+ operation load2(A,B,C){
+   1: do clear(A) goto 2
+   2: do soma2(A,B,C) goto 0
+ }
+ 
+ 
+ 
+// ********************** MULTIPLICAÇÃO **********************
+ // A := A * B (não destrutiva)
+ operation multiplica(A,B,C,D) {
+   1: do load(C,A) goto 2
+   2: if zero C then goto 0 else goto 3
+   3: do soma2(A,B,D) goto 4
+   4: do dec C goto 2
+ }
+
+ // ********************** POTENCIAÇÃO **********************
+// A := A ^ B (B diferente de 0, destrutiva)
+ operation potencia(A,B,C,D,E,F) {
+    1: do load2(E, A, F) goto 2
+    2: do dec B goto 3
+    3: if zero B then goto 0 else goto 4
+    4: do multiplica(A,E,C,D) goto 5
+    5: do dec B goto 3
+ }
+
+// A := A - B DESTROI B
+operation subtrai(A,B) {
+  1: if zero B then goto 0 else goto 2
+  2: do dec A goto 3
+  3: do dec B goto 1
+
+} 
+
+
+
+
+main {
+    0: do clear(Y) goto 1
+    1: do clear(B) goto 2
+    2: do load2(A,X,C) goto 3
+    3: do inc Y goto 4
+    4: do inc B goto 5
+
+    5: do load2(D,B,C) goto 6
+    6: do load2(E,B,C) goto 7
+    7: do multiplica(D,E,C,F) goto 8
+    8: if zero A then goto 100 else goto 9
+    9: do dec D goto 10
+    10: do dec A goto 11
+    11: if zero D then goto 12 else goto 8 
+    12: if zero A then goto 1000 else goto 13
+    13: do dec Y goto 14
+    14: if zero Y then goto 15 else goto 16
+    15: do inc Y goto 17
+    16: do dec Y goto 17
+    17: do clear(C) goto 18
+    18: do clear(F) goto 19
+    19: do clear(G) goto 20 
+    20: do clear(H) goto 2
+    100: do clear(Y) goto 1000
+}

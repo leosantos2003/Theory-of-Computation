@@ -1,0 +1,125 @@
+let
+
+-------------------------------------------------
+true1 = \a b. a;
+false1 = \a b. b;
+if1 = \c a b. c a b;
+and1 = \a b. a b a;
+or1 = \a b. a a b;
+not1 = \p. p false1 true1;
+
+pair1 = \a b c. c a b;
+fst1 = \p. p true1;
+snd1 = \p. p false1;
+
+zero1 = \f x. x;
+succ1 = \n p. \q. p (n p q);
+pred1 = \n. fst1 (n (\p.(pair1 (snd1 p) (succ1 (snd1 p)))) (pair1 zero zero));
+add1 = \m n p q. (m p) (n p q);
+mult1 = \m n. m (\z. add1 n z) 0;
+pot21 = \m. mult1 m m;
+exp1 = \n e. e n; -- exp = n^e
+sub1 = \m n. (n pred1) m;
+isZero1 = \n. n (\x. false1) true1;
+-------------------------------------------------
+
+
+true = \x y. x;
+
+false = \x y. y;
+
+if = \x y z. x y z;
+
+isZero = \n.n (\x.false) true;
+
+not = \x. if x false true;
+
+and = \x y. if x y false;
+
+or = \x y. if x true y;
+
+succ = \n.\f.\x. f (n f x);
+
+soma = \m.\n.\f.\x.m f (n f x);
+
+mult = \num1 num2. \f x. num1 (num2 f) x;
+   
+pow = \num1. \num2. num1 num2;
+
+pair = \num1 num2 sel. sel num1 num2;
+
+empty = \x. true;
+
+cons = pair;
+
+fst = \p. p true;
+
+head = fst;
+
+snd = \p. p false;
+
+tail = snd;
+
+pol = \num1. (soma (pow 3 num1) (mult num1 2) );
+
+shift_inc= \p. pair (snd p) (succ (snd p));
+
+pred = \num. fst (num shift_inc (pair 0 0));
+
+sub = \num1 num2. num2 pred num1;
+
+igual = \num1.\num2. and (isZero (sub num1 num2)) (isZero (sub num2 num1));
+
+maior_que = \num1.\num2. not (isZero (sub num1 num2));
+
+add1 = \num. soma num 1;
+
+Y = \f. (\x. f (x x)) (\x. f (x x));
+
+isEmpty = \l. l (\a b. false);
+
+square = \num1. pow 2 num1;
+
+
+
+test_isSquare = Y (\R.\n.\x. 
+    if (igual (square x) n)
+       true
+       (if (maior_que x n)
+           false
+           (R n (succ x))
+       )
+);
+
+isSquare = \x. test_isSquare x 0;
+
+
+assoc = \x. cons(head (head x) cons(tail(head x) tail x)); 
+
+somaFrac = \p1 p2. pair1 (add1 (mult1(fst1 p1)(snd1 p2))(mult1 (fst1 p2)(snd1 p1))) (mult1 (snd1 p1)(snd1 p2));
+
+
+geraLista = Y (\R. \n. 
+		if (igual n 0) 
+			(cons 0 empty)
+			(cons n (R (pred n))));
+
+map = Y (\R.\f.\l. 
+          if (isEmpty l)
+             empty
+             (cons (f (head l)) (R f (tail l)))
+       );
+
+
+seq = Y (\R n.
+    if (igual 0 n)
+        0
+        (if (igual 1 n)
+            1
+            (soma (R (pred n)) (mult 2 (R (sub n 2))))
+        )
+)
+;
+
+
+in

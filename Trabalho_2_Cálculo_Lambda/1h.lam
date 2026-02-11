@@ -1,0 +1,30 @@
+let
+
+
+
+-- Números
+zero = \f x. x;
+succ = \n. \p q. p (n p q);
+one = succ zero;
+two = succ one;
+
+-- Soma e multiplicação
+add = \m n p q. m p (n p q);
+mult = \m n. m (\z. add n z) zero;
+
+-- Pares
+pair = \a b c. c a b;
+fst = \p. p (\a b. a);
+snd = \p. p (\a b. b);
+
+
+
+-- 1h
+
+sS = \p. pair (snd p) (add (snd p) (mult two (fst p)));
+
+seq = \n. fst (n sS2 (pair zero one));
+
+
+
+in

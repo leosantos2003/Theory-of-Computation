@@ -1,0 +1,100 @@
+// ********************** CLEAR *******
+ operation clear(A){
+  1: if zero A then goto 0 else goto 2
+  2: do dec A goto 1
+ }
+
+ // ********************** SOMA 1 **********************
+ // A:=A+B (destrutiva)
+ operation soma(A,B){
+   1: if zero B then goto 0 else goto 2
+   2: do dec B goto 3
+   3: do inc A goto 1
+ }
+ 
+  // ********************** SOMA 2 **********************
+ // A:=A+B (não destrutiva)
+ operation soma2(A,B,C){
+   1: if zero B then goto 5 else goto 2
+   2: do dec B goto 3
+   3: do inc A goto 4
+   4: do inc C goto 1
+   5: if zero C then goto 0 else goto 6
+   6: do dec C goto 7
+   7: do inc B goto 5
+ }
+ // ********************** ATRIBUIÇÃO 1 **********************
+ // A:=B (destrutiva)
+ operation load(A,B){
+   1: do clear(A) goto 2
+   2: do soma(A,B) goto 0
+ }
+ 
+// ********************** ATRIBUIÇÃO 2 **********************
+ // A:=B usando C (não destrutiva)
+ operation load2(A,B,C){
+   1: do clear(A) goto 2
+   2: do soma2(A,B,C) goto 0
+ }
+ 
+ 
+ 
+// ********************** MULTIPLICAÇÃO **********************
+ // A := A * B (não destrutiva)
+ operation multiplica(A,B,C,D) {
+   1: do load(C,A) goto 2
+   2: if zero C then goto 0 else goto 3
+   3: do soma2(A,B,D) goto 4
+   4: do dec C goto 2
+ }
+
+ // ********************** POTENCIAÇÃO **********************
+// A := A ^ B (B diferente de 0, destrutiva)
+ operation potencia(A,B,C,D,E,F) {
+    1: do load2(E, A, F) goto 2
+    2: do dec B goto 3
+    3: if zero B then goto 0 else goto 4
+    4: do multiplica(A,E,C,D) goto 5
+    5: do dec B goto 3
+ }
+
+// A := A - B DESTROI B
+operation subtrai(A,B) {
+  1: if zero B then goto 0 else goto 2
+  2: do dec A goto 3
+  3: do dec B goto 1
+
+} 
+
+// // divisao A/B = E resto F C = A C- (D=B) G registrador negativo
+ operation divisao(A,B,C,D,E,F,G){
+// load nos registradores C e limpa E
+1: do load2(C,A,G) goto 2
+2: do clear(E) goto 33
+33: do clear (F) goto 3
+3: if zero C then goto 0 else goto 4
+
+// subtração
+4: do load2(D,B,G) goto 5
+5: do dec C goto 6
+6: do dec D goto 7
+7: if zero C then goto 101 else goto 8
+8: if zero D then goto 9 else goto 5
+9: do inc E goto 4  // incrementa quociente
+
+101: if zero D then goto 110 else goto 102// Tem resto? Se não, final de divisão
+102: do load2(F,B,G) goto 103
+103: do dec F goto 104
+104: do dec D goto 105
+105: if zero D then goto 0 else goto 103
+110: do inc E goto 0 // é divisível
+}
+
+
+main {
+    1: do inc Y goto 2
+    2: do inc Y goto 3
+    3: if zero X then goto 5 else goto 4
+    4: do potencia(Y,X,C,D,E,F) goto 0
+    5: do dec Y goto 0
+}

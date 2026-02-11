@@ -1,0 +1,210 @@
+// limpa variável
+operation clear(A){
+ 1: if zero A then goto 0 else goto 2
+ 2: do dec A goto 1
+}
+
+// A:=A+B (soma destrutiva)
+operation soma(A,B){
+  1: if zero B then goto 0 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 1
+}
+
+// A:=A+B (soma não-destrutiva)
+operation soma2(A,B,C){
+  1: if zero B then goto 5 else goto 2
+  2: do dec B goto 3
+  3: do inc A goto 4
+  4: do inc C goto 1
+  5: if zero C then goto 0 else goto 6
+  6: do dec C goto 7
+  7: do inc B goto 5
+}
+
+// A:=B (atribuição destrutiva)
+operation load(A,B){
+  1: do clear(A) goto 2
+  2: do soma(A,B) goto 0
+}
+
+// A:=B usando C (atribuição não-destrutiva)
+operation load2(A,B,C){
+  1: do clear(A) goto 2
+  2: do soma2(A,B,C) goto 0
+}
+
+// A:=A div 2 usando C (divisão inteira por 2)
+operation div2(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: do inc A goto 2
+}
+
+// A divisivel_por_2 usando C (teste se multiplo de 2)
+operation divBy2(A,C,T){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 8 else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto 0 else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 2
+  8: do inc T goto 0
+}
+
+// A:=fst(B) usando C,D (extrai o primeiro componente do par)
+operation fst(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load2(C,B,D) goto 3
+  3: if divBy2(C,D) then goto 4 else goto 6
+  4: do div2(C,D) goto 5
+  5: do inc A goto 3
+  6: do clear(C) goto 0
+}
+
+// A:=A div 3 usando C (divisão inteira por 3)
+operation div3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto 0 else goto 3
+  3: do dec C goto 4
+  4: if zero C then goto 0 else goto 5
+  5: do dec C goto 6
+  6: if zero C then goto 0 else goto 7
+  7: do dec C goto 8
+  8: do inc A goto 2
+}
+
+// A divisivel_por_3 usando C (teste se múltiplo de 3)
+test divBy3(A,C){
+  1: do load(C,A) goto 2
+  2: if zero C then goto true else goto 3
+  3: do dec C goto 4
+  4: do inc A goto 5
+  5: if zero C then goto false else goto 6
+  6: do inc A goto 7
+  7: do dec C goto 8
+  8: if zero C then goto false else goto 9
+  9: do dec C goto 10
+ 10: do inc A goto 2
+}
+
+// A:=snd(B) usando C,D (extrai o segundo componente do par)
+operation snd(A,B,C,D){
+  1: do clear(A) goto 2
+  2: do load2(C,B,D) goto 3
+  3: if divBy3(C,D) then goto 4 else goto 6
+  4: do div3(C,D) goto 5
+  5: do inc A goto 3
+  6: do clear(C) goto 0
+}
+
+// --------------------------------------------------------
+
+// Operação: A:= 2xA
+operation mul_two(A, B, C){
+    1: do load2(B, A, C) goto 2
+    2: do soma(A, B) goto 0
+}
+
+// Operação: A:= 3xA
+operation mul_three(A, B, C){
+   1: do load2(B, A, C) goto 2
+   2: do soma2(A, B, C) goto 3
+   3: do soma(A, B) goto 0
+}
+
+// Operação: B:= 2^A
+operation two_nth_power(A, B, C, D, E){
+    1: do clear(B) goto 2
+    2: do inc B goto 3
+    3: do load2(C, A, D) goto 4
+    4: if zero C then goto 0 else goto 5
+    5: do mul_two(B, D, E) goto 6
+    6: do dec C goto 4
+}
+
+// Operação: B:= 3^A
+operation three_nth_power(A, B, C, D, E){
+    1: do clear(B) goto 2
+    2: do inc B goto 3
+    3: do load2(C, A, D) goto 4
+    4: if zero C then goto 0 else goto 5
+    5: do mul_three(B, D, E) goto 6
+    6: do dec C goto 4
+}
+
+// Operação: A := A x B
+operation a_mul_b(A, B, C, D, E){
+    1: do load(D, A) goto 2
+    2: do load2(C, B, E) goto 3
+    3: if zero D then goto 0 else goto 4
+    4: if zero C then goto 0 else goto 5
+    5: do soma2(A, D, E) goto 6
+    6: do dec C goto 4
+}
+
+// Operação: Codificar a saída com dois valores
+operation cod_output(Y, A, B, C, D, E, F){
+    1: do two_nth_power(A, Y, D, E, F) goto 2
+    2: do three_nth_power(B, C, D, E, F) goto 3
+    3: do a_mul_b(Y, C, D, E, F) goto 0
+}
+
+// Operação: A:= A - B usando C
+operation a_minus_b_with_c(A, B, C){
+    1: if zero B then goto 5 else goto 2
+    2: do dec B goto 3
+    3: do dec A goto 4
+    4: do inc C goto 1
+    5: if zero C then goto 0 else goto 6
+    6: do dec C goto 7
+    7: do inc B goto 5
+}
+
+// --------------------------------------------------------
+
+//operation foo
+  //1. testa se x é par
+
+  //2. se sim, n = x/2
+  //3. se não n = -[(x+1)/2]
+
+  //4. depois, testa se n < 0
+
+  // Como a máquina não aceita negativos,
+  // assumimos que, se x for par, n será considerado positivo,
+  // enquanto que, se x não for par, n será considerado negativo.
+
+  //5. se sim, y = 2^1 . 3^|n|
+  //6. se não, y = 2^0 . 3^n
+
+  //7. fim
+
+
+//            X,B,C,D,E,T,N,Y 
+operation foo(A,B,C,D,E,F,G,H){
+
+    1: do divBy2(A,C,F) goto 2
+    2: if zero F then goto 6 else goto 3
+
+    // x é par -> n é positivo
+    3: do load2(G,A,C) goto 4
+    4: do div2(G,C) goto 5
+    5: do three_nth_power(G, H, C, D, E) goto 0
+
+    // x não é par -> n é negativo
+    6: do load2(G,A,C) goto 7
+    7: do inc G goto 8
+    8: do div2(G,C) goto 9
+    9: do three_nth_power(G, H, C, D, E) goto 10
+    10: do mul_two(H, B, C) goto 0
+
+}
+
+main {
+    1:do foo(X,B,C,D,E,T,N,Y) goto 0
+}

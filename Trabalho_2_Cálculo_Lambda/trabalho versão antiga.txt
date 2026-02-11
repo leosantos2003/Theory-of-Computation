@@ -1,0 +1,86 @@
+let
+
+
+-- Combinador de Ponto Fixo
+Y = \f. (\x. f (x x)) (\x. f (x x));
+
+-- Logica Booleana
+true = \a b. a;
+false = \a b. b;
+if = \c a b. c a b;
+and = \a b. a b a;
+or = \a b. a a b;
+not = \p. p false true;
+
+-- Pares
+pair = \a b c. c a b;
+fst = \p. p true;
+snd = \p. p false;
+
+-- Ternas
+trio = \a b c d. d a b c;
+tfst = \t. t (\a b c. a);
+tsnd = \t. t (\a b c. b);
+ttrd = \t. t (\a b c. c);
+
+-- Numeros Naturais
+zero = \f x. x;
+succ = \n p. \q. p (n p q);
+pred = \n. fst (n (\p.(pair (snd p) (succ (snd p)))) (pair zero zero));
+add = \m n p q. (m p) (n p q);
+mult = \m n. m (\z. add n z) 0;
+pot2 = \m. mult m m;
+exp = \n e. e n; -- exp = n^e
+sub = \m n. (n pred) m;
+isZero = \n. n (\x. false) true;
+
+-- Listas
+empty = \x. true;
+cons = pair;
+isEmpty = \l. l (\x y.false);
+head = fst;
+tail = snd;
+
+
+-- 1a
+igual = \a b. and (isZero (sub a b)) (isZero (sub b a));
+
+
+-- 1b
+pol = \a b. add (exp a 2) (mult 3 b);
+
+
+-- 1c
+less3 = \n. if (or (isZero n) (or (isZero (pred n))(isZero (pred (pred n))))) (true) (false);
+mt = \X n. if (less3 n) (if (isZero n)(true)(false)) (X (sub n 3));
+
+multTres = Y mt;
+
+
+-- 1d
+multFrac = \p1 p2. pair (mult (fst p1) (fst p2)) (mult (snd p1) (snd p2));
+
+
+-- 1e
+somaFrac = \p1 p2. pair (add (mult(fst p1)(snd p2))(mult (fst p2)(snd p1))) (mult (snd p1)(snd p2));
+
+
+-- 1f
+gl = \X n. if (isZero n) (empty) (cons n (X (pred n)));
+
+geraLista = Y gl;
+
+
+-- 1g
+ml = \X l. if (isEmpty l) (0) (mult (head l) (if (isEmpty(tail l)) 1 (X (tail l))));
+
+multLista = Y ml;
+
+
+-- 1h
+sS = \p. pair (snd p) (sub (mult 3 (snd p)) (mult 2 (fst p)));
+
+seq = \n. fst (n sS (pair 2 5));
+
+
+in

@@ -1,0 +1,93 @@
+// Operação: A:= 0
+operation clear(A){
+    1: if zero A then goto 0 else goto 2
+    2: do dec A goto 1
+}
+
+
+// Operação: A:= A + B (B termina em 0)
+operation a_plus_b(A, B){
+    1: if zero B then goto 0 else goto 2
+    2: do dec B goto 3
+    3: do inc A goto 1
+}
+
+
+// Operação: A:= A + B usando C (valor de B é preservado)
+operation a_plus_b_with_c(A, B, C){
+    1: if zero B then goto 5 else goto 2
+    2: do dec B goto 3
+    3: do inc A goto 4
+    4: do inc C goto 1
+    5: if zero C then goto 0 else goto 6
+    6: do dec C goto 7
+    7: do inc B goto 5
+}
+
+
+// Operação: A:= A - B usando C
+operation a_minus_b(A, B){
+    1: if zero B then goto 0 else goto 2
+    2: do dec B goto 3
+    3: do dec A goto 1
+} 
+
+
+// Operação: A:= B (B termina em 0)
+operation pass_a_to_b(A, B){
+    1: do clear(A) goto 2
+    2: do a_plus_b(A, B) goto 0
+}
+
+
+// Operação: A:= B usando C(valor de B é preservado)
+operation copy_a_to_b(A, B, C){
+    1: do clear(A) goto 2
+    2: do a_plus_b_with_c(A, B, C) goto 0
+}
+
+// Operação: A:= 2xA
+operation mult_two(A, B, C){
+    1: do copy_a_to_b(B, A, C) goto 2
+    2: do a_plus_b(A, B) goto 0
+}
+
+
+
+// Operação: A:= 3xA
+operation mult_three(A, B, C){
+   1: do copy_a_to_b(B, A, C) goto 2
+   2: do copy_a_to_b(H, A, C) goto 3
+   3: do a_plus_b(A, B) goto 4
+   4: do a_plus_b(A, H) goto 0
+}
+
+// Funcao J: Jn-1 + 2Jn-2
+operation func_j(B, C){
+   1: do copy_a_to_b(E, C, J) goto 2 
+   2: do copy_a_to_b(F, B, J) goto 3
+   3: do mult_two(F, J, K) goto 4
+   4: do pass_a_to_b(G, E) goto 5
+   5: do a_plus_b(G, F) goto 0
+}
+
+
+
+// Função main
+main{
+    
+    1: do copy_a_to_b(JNM2, Y, D) goto 2
+    2: if zero X then goto 0 else goto 3
+    3: do clear(Y) goto 4
+    4: do dec X goto 5 
+    5: do add Y 1 goto 6
+    6: if zero X then goto 0 else goto 7
+    7: do copy_a_to_b(JNM1, Y, D) goto 8
+    8: do dec X goto 9
+    9: do func_j(JNM2, JNM1) goto 10
+    10: if zero X then goto 11 else goto 12
+    11: do copy_a_to_b(Y, G, J) goto 0
+    12: do pass_a_to_b(JNM2, JNM1) goto 13
+    13: do pass_a_to_b(JNM1, G) goto 8
+
+}

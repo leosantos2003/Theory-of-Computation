@@ -1,0 +1,33 @@
+let
+
+-- Logica Booleana
+true = \a b. a;
+false = \a b. b;
+if = \c a b. c a b;
+and = \a b. a b a;
+or = \a b. a a b;
+not = \p. p false true;
+
+-- Pares
+pair = \a b c. c a b;
+fst = \p. p true;
+snd = \p. p false;
+
+
+-- Numeros Naturais
+zero = \f x. x;
+succ = \n p. \q. p (n p q);
+pred = \n. fst (n (\p.(pair (snd p) (succ (snd p)))) (pair zero zero));
+add = \m n p q. (m p) (n p q);
+mult = \m n. m (\z. add n z) 0;
+pot2 = \m. mult m m;
+exp = \n e. e n; -- exp = n^e
+sub = \m n. (n pred) m;
+isZero = \n. n (\x. false) true;
+
+-- 1e
+somaFrac = \p1 p2. pair (add (mult(fst p1)(snd p2))(mult (fst p2)(snd p1))) (mult (snd p1)(snd p2));
+
+in
+
+somaFrac 2 2 2 2
